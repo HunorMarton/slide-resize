@@ -7,6 +7,7 @@ export const slides: SlideData[] = [
     columns: [
       {
         id: '1',
+        type: 'A',
         blocks: [
           {
             id: '1',
@@ -27,6 +28,7 @@ export const slides: SlideData[] = [
 
       {
         id: '2',
+        type: 'A',
         blocks: [
           {
             id: '1',
@@ -47,18 +49,17 @@ export const slides: SlideData[] = [
         ],
       },
 
-      /*
       {
         id: '3',
+        type: 'B',
         blocks: [
           {
-            id: '3',
-            type: 'image',
-            content: 'https://via.placeholder.com/150',
+            id: '1',
+            type: 'header',
+            content: 'Very big text',
           },
         ],
       },
-      */
     ],
   },
 ]

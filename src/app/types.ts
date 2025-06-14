@@ -9,6 +9,10 @@ export type BlockType =
   | 'form'
   | 'other'
 
+export type SlideId = string
+export type ColumnId = string
+export type ColumnType = string
+
 export type BlockData =
   | {
       id: string
@@ -24,16 +28,18 @@ type TextBlockData = {
 }
 
 export type ColumnData = {
-  id: string
+  id: ColumnId
+  type: ColumnType
   blocks: BlockData[]
 }
 
 export type SlideData = {
-  id: string
+  id: SlideId
   title: string
   columns: ColumnData[]
 }
 
-export type StyleVariables = {
-  font: number
+export type Style = {
+  grow: number
+  fontSize: number
 }

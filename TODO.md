@@ -1,0 +1,7 @@
+- Zustand
+  -- Keeps track each column type's width and sizings
+  -- Does iterations
+  -- Can roll back
+  -- On update
+  --- First it updates columns with the same type
+  --- If that does not fail (fon't too small) then iterate over the whole thing

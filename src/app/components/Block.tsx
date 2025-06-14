@@ -6,7 +6,12 @@ export function Block({ block }: { block: BlockData }) {
   switch (block.type) {
     case 'header':
       return (
-        <h1 style={{ fontSize: `var(--header-font-size)` }}>{block.content}</h1>
+        <h1
+          className="font-bold mb-[1cqw]"
+          style={{ fontSize: `calc(var(--font-size) * 1.25)` }}
+        >
+          {block.content}
+        </h1>
       )
     case 'text':
       return (
@@ -15,7 +20,7 @@ export function Block({ block }: { block: BlockData }) {
             <p
               key={paragraph}
               className="my-[1cqw]"
-              style={{ fontSize: `var(--text-font-size)` }}
+              style={{ fontSize: `var(--font-size)` }}
             >
               {paragraph}
             </p>

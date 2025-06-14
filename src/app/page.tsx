@@ -1,17 +1,14 @@
-import { Slide as Slide1 } from './components/Slide1'
-import { Slide as Slide2 } from './components/Slide2'
-import { Slide as Slide3 } from './components/Slide3'
-import { slides } from './lib/data'
+import { Slide } from './components/Slide0'
+import { slides } from './lib/data2'
 
 export default function Home() {
+  console.log('render page', slides.length)
   return (
     <div>
-      <main>
+      <main className="m-5">
         {slides.map((slide) => (
           <div key={slide.id}>
-            <Slide1 slide={slide} />
-            <Slide2 slide={slide} />
-            <Slide3 slide={slide} />
+            <Slide slide={slide} />
           </div>
         ))}
       </main>
