@@ -26,13 +26,13 @@ export function Slide({ slide }: { slide: SlideData }) {
     width * headerHeight -
     width * gap
 
-  console.log('render slide', calculating)
+  const columnTypes = slide.columns.map((column) => column.type).join('')
 
   return (
     <>
       <SlideContainer>
         <h1 className="text-[2.5cqw] h-[3.75cqw] font-bold">{slide.title}</h1>
-        <Debugger slideId={slide.id} />
+        <Debugger slideId={slide.id} columnTypes={columnTypes} />
 
         {calculating ? (
           <p className="text-[1.5cqw]">Calculating...</p>

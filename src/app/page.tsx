@@ -1,5 +1,5 @@
 import { Slide } from './components/Slide'
-import { slides } from './lib/data2'
+import { slides } from './lib/data'
 
 export default function Home() {
   console.log('render page', slides.length)

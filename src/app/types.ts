@@ -1,6 +1,7 @@
 export type BlockType =
   | 'header'
   | 'text'
+  | 'list'
   | 'image'
   | 'video'
   | 'audio'
@@ -16,15 +17,34 @@ export type ColumnType = string
 export type BlockData =
   | {
       id: string
-      type: Exclude<BlockType, 'text'>
+      type: Exclude<BlockType, 'text' | 'list' | 'table'>
       content: string
     }
   | TextBlockData
+  | ListBlockData
+  | TableBlockData
 
 type TextBlockData = {
   id: string
   type: 'text'
   paragraphs: string[]
+}
+
+type ListBlockData = {
+  id: string
+  type: 'list'
+  label?: string
+  items: string[]
+}
+
+type TableBlockData = {
+  id: string
+  type: 'table'
+  headers: string[]
+  rows: {
+    id: string
+    cells: string[]
+  }[]
 }
 
 export type ColumnData = {

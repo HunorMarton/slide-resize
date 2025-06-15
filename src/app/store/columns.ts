@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { SlideData, SlideId, ColumnType, ColumnId, Style } from '../types'
-import { slides } from '../lib/data2'
+import { slides } from '../lib/data'
 import {
   generateDefaultStyles,
-  saveFontSize,
-  handleHeightChange,
-  invalidateColumnHeightsForType,
+  handleFontSizeChange,
+  handleSizeChange,
   copyColumnStyles,
   getScore,
 } from './columnLogic'
@@ -20,13 +19,17 @@ interface ColumnState {
 
   updateColumnFontSize: (
     slideId: SlideId,
+    version: number,
     columnType: ColumnType,
     fontSize: number
   ) => void
 
-  updateColumnHeight: (
+  updateColumnSize: (
     slideId: SlideId,
+    version: number,
     columnId: ColumnId,
+    fontSize: number,
+    width: number,
     height: number,
     maxHeight: number
   ) => void
@@ -63,78 +66,121 @@ export const useStore = create<ColumnState>()((set) => ({
 
   updateColumnFontSize: (
     slideId: SlideId,
+    version: number,
     columnType: ColumnType,
     fontSize: number
   ) => {
     console.log('updateColumnFontSize', columnType, fontSize)
-    saveFontSize(slideId, columnType, fontSize)
-    invalidateColumnHeightsForType(slideId, columnType)
 
-    set((state) => ({
-      columnStyles: {
-        ...state.columnStyles,
-        [slideId]: {
-          ...state.columnStyles[slideId],
-          [columnType]: {
-            ...state.columnStyles[slideId][columnType],
-            fontSize,
+    set((state) => {
+      if (version !== state.version[slideId]) {
+        console.log('tried to update previous version, ignoring')
+        return {}
+      }
+
+      const result = handleFontSizeChange(slideId, columnType, fontSize)
+      if (result?.status === 'ignoring') {
+        console.log('ignoring font size change')
+        return {}
+      }
+
+      return {
+        columnStyles: {
+          ...state.columnStyles,
+          [slideId]: {
+            ...state.columnStyles[slideId],
+            [columnType]: {
+              ...state.columnStyles[slideId][columnType],
+              fontSize,
+            },
           },
         },
-      },
-    }))
+      }
+    })
   },
 
-  updateColumnHeight: (
+  updateColumnSize: (
     slideId: SlideId,
+    version: number,
     columnId: ColumnId,
+    fontSize: number,
+    width: number,
     height: number,
     maxHeight: number
   ) => {
-    console.log('updateColumnHeight', columnId, height)
-    const result = handleHeightChange(slideId, columnId, height, maxHeight)
+    console.log(
+      'updateColumnSize',
+      columnId,
+      fontSize,
+      width,
+      height,
+      maxHeight
+    )
 
-    switch (result?.status) {
-      case 'done':
-        set((state) => ({
-          calculating: {
-            ...state.calculating,
-            [slideId]: false,
-          },
-          score: {
-            ...state.score,
-            [slideId]: result.score,
-          },
-          version: {
-            ...state.version,
-            [slideId]: result.version,
-          },
-          // TODO: Doesn't this needs to set maxVersion as well?
-        }))
-        return
-      case 'newVersion':
-        console.log('NEW columnStyles', result.columnStyles)
-        set((state) => ({
-          score: {
-            ...state.score,
-            [slideId]: result.score,
-          },
-          version: {
-            ...state.version,
-            [slideId]: result.version,
-          },
-          maxVersion: {
-            ...state.maxVersion,
-            [slideId]: result.version,
-          },
-          columnStyles: {
-            ...state.columnStyles,
-            [slideId]: result.columnStyles,
-          },
-        }))
-        return
-      default:
-        return
-    }
+    set((state) => {
+      if (version !== state.version[slideId]) {
+        console.log('tried to update previous version, ignoring')
+        return {}
+      }
+
+      const result = handleSizeChange(
+        slideId,
+        columnId,
+        fontSize,
+        width,
+        height,
+        maxHeight
+      )
+
+      switch (result?.status) {
+        case 'done':
+          console.log('DONE columnStyles', result.columnStyles)
+          return {
+            calculating: {
+              ...state.calculating,
+              [slideId]: false,
+            },
+            score: {
+              ...state.score,
+              [slideId]: result.score,
+            },
+            version: {
+              ...state.version,
+              [slideId]: result.version,
+            },
+            maxVersion: {
+              ...state.maxVersion,
+              [slideId]: result.version,
+            },
+            columnStyles: {
+              ...state.columnStyles,
+              [slideId]: result.columnStyles,
+            },
+          }
+        case 'newVersion':
+          console.log('NEW columnStyles', result.columnStyles)
+          return {
+            score: {
+              ...state.score,
+              [slideId]: result.score,
+            },
+            version: {
+              ...state.version,
+              [slideId]: result.version,
+            },
+            maxVersion: {
+              ...state.maxVersion,
+              [slideId]: result.version,
+            },
+            columnStyles: {
+              ...state.columnStyles,
+              [slideId]: result.columnStyles,
+            },
+          }
+        default:
+          return {}
+      }
+    })
   },
 
   decreaseVersion: (slideId: SlideId) => {

@@ -5,7 +5,7 @@
   --foreground: #171717;
   --padding-slide: 4;
   --h-gap-slide: 3;
-  --v-gap-slide: 2;
+  --v-gap-slide: 3;
 }
 
 @theme inline {

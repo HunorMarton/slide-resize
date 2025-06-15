@@ -18,7 +18,7 @@ export function Column({
   return (
     <div
       ref={ref}
-      className="basis-0"
+      className="basis-0 overflow-x-hidden hover:outline hover:outline-green-500 hover:outline-dashed"
       style={
         {
           '--font-size': `${fontSize}cqw`,

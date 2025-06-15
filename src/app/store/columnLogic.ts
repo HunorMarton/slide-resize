@@ -1,5 +1,5 @@
 import { SlideId, SlideData, ColumnType, ColumnId, Style } from '../types'
-import { slides } from '../lib/data2'
+import { slides } from '../lib/data'
 import {
   MAX_VERSIONS,
   DEFAULT_FONT_SIZE,
@@ -14,7 +14,7 @@ const data: Record<
     columnIds: Map<ColumnId, ColumnType>
     versions: {
       columnStyles: Record<ColumnType, Style>
-      columnHeights: Map<ColumnId, number>
+      columnSizes: Map<ColumnId, { width: number; height: number }>
       maxHeight: number
       score: number
     }[]
@@ -36,15 +36,13 @@ function initializeData() {
       versions: [
         {
           columnStyles: generateDefaultStyles(slide),
-          columnHeights: new Map(),
+          columnSizes: new Map(),
           maxHeight: Infinity,
           score: 0,
         },
       ],
     }
   })
-
-  console.log('initial slides', data)
 }
 
 export function generateDefaultStyles(slide: SlideData) {
@@ -59,7 +57,7 @@ export function generateDefaultStyles(slide: SlideData) {
 
 initializeData()
 
-export function saveFontSize(
+export function handleFontSizeChange(
   slideId: SlideId,
   columnType: ColumnType,
   fontSize: number
@@ -67,25 +65,47 @@ export function saveFontSize(
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
+  if (lastVersion.columnStyles[columnType].fontSize < fontSize) {
+    console.log('font size is larger than last version, ignoring')
+    return {
+      status: 'ignoring',
+    }
+  }
+
+  // Update font size
   lastVersion.columnStyles[columnType].fontSize = fontSize
+
+  invalidateColumnSizesForType(slideId, columnType)
 }
 
-export function invalidateColumnHeightsForType(
+function invalidateColumnSizesForType(
   slideId: SlideId,
   columnType: ColumnType
 ) {
+  console.log(
+    'invalidate column heights',
+    columnType,
+    data[slideId]?.columnTypes.get(columnType)
+  )
   data[slideId]?.columnTypes.get(columnType)?.forEach((columnId) => {
-    data[slideId]?.versions.at(-1)?.columnHeights.delete(columnId)
+    data[slideId]?.versions.at(-1)?.columnSizes.delete(columnId)
   })
 }
 
-export function handleHeightChange(
+export function handleSizeChange(
   slideId: SlideId,
   columnId: ColumnId,
+  fontSize: number,
+  width: number,
   height: number,
   maxHeight: number
 ):
-  | { status: 'done'; score: number; version: number }
+  | {
+      status: 'done'
+      score: number
+      version: number
+      columnStyles: Record<ColumnType, Style>
+    }
   | {
       status: 'newVersion'
       score: number
@@ -95,9 +115,16 @@ export function handleHeightChange(
   | undefined {
   // React re-renders the component that initiated the font size change that already has the correct size
   // Ignore this case as it's not a real height change
-  if (heightDidNotChange(slideId, columnId, height)) return
+  if (sizeDidNotChange(slideId, columnId, width, height)) {
+    console.log('size did not change, ignoring')
+    return
+  }
+  if (usedPreviousFontSize(slideId, columnId, fontSize)) {
+    console.log('used previous font size, ignoring')
+    return
+  }
 
-  saveColumnHeight(slideId, columnId, height, maxHeight)
+  saveColumnSize(slideId, columnId, width, height, maxHeight)
 
   if (allColumnHeightsSet(slideId)) {
     const latestVersion = data[slideId].versions.at(-1)
@@ -106,20 +133,28 @@ export function handleHeightChange(
 
     const score = calculateScore(slideId)
     latestVersion.score = score
-    console.log('score', score)
 
-    if (previousVersion && previousVersion.score > score) {
-      console.log(
-        'score is lower than previous version, not adding new version'
-      )
-      // TODO: Revert to previous version
-      return { status: 'done', score, version: data[slideId].versions.length }
+    if (previousVersion && previousVersion.score >= score) {
+      console.log('score is lower or equal to previous version, rolling back')
+      data[slideId].versions.pop()
+
+      return {
+        status: 'done',
+        score: previousVersion.score,
+        version: data[slideId].versions.length,
+        columnStyles: copyColumnStyles(slideId),
+      }
     }
 
-    if (data[slideId].versions.length > MAX_VERSIONS) {
+    if (data[slideId].versions.length >= MAX_VERSIONS) {
       // For performance and to avoid potential infinite loops
       console.log('too many versions, not adding new version')
-      return { status: 'done', score, version: data[slideId].versions.length }
+      return {
+        status: 'done',
+        score,
+        version: data[slideId].versions.length,
+        columnStyles: copyColumnStyles(slideId),
+      }
     }
 
     const columnType = getColumnTypeOfTheTallestColumn(slideId)
@@ -133,32 +168,46 @@ export function handleHeightChange(
       status: 'newVersion',
       score,
       version: data[slideId].versions.length,
-      columnStyles: copyColumnStyles(slideId, -1, true),
+      columnStyles: copyColumnStyles(slideId),
     }
   }
 }
 
-function heightDidNotChange(
+function sizeDidNotChange(
   slideId: SlideId,
   columnId: ColumnId,
+  width: number,
   height: number
 ) {
-  const currentHeight = data[slideId].versions
-    .at(-1)
-    ?.columnHeights.get(columnId)
-  return currentHeight === height
+  const currentSize = data[slideId].versions.at(-1)?.columnSizes.get(columnId)
+  return currentSize?.width === width && currentSize?.height === height
 }
 
-function saveColumnHeight(
+function usedPreviousFontSize(
   slideId: SlideId,
   columnId: ColumnId,
+  fontSize: number
+) {
+  const lastVersion = data[slideId].versions.at(-1)
+  if (!lastVersion) throw new Error('No last version')
+
+  const columnType = data[slideId].columnIds.get(columnId)
+  if (!columnType) throw new Error('No column type')
+
+  return lastVersion.columnStyles[columnType].fontSize !== fontSize
+}
+
+function saveColumnSize(
+  slideId: SlideId,
+  columnId: ColumnId,
+  width: number,
   height: number,
   maxHeight: number
 ) {
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
-  lastVersion.columnHeights.set(columnId, height)
+  lastVersion.columnSizes.set(columnId, { width, height })
   lastVersion.maxHeight = maxHeight
 }
 
@@ -167,39 +216,45 @@ function allColumnHeightsSet(slideId: SlideId) {
   if (!lastVersion) throw new Error('No last version')
 
   const numberOfColumns = data[slideId].columnIds.size
-  const numberOfColumnsWithHeights = lastVersion.columnHeights.size
+  const numberOfColumnsWithSize = lastVersion.columnSizes.size
 
   console.log(
-    numberOfColumns === numberOfColumnsWithHeights
-      ? `all column heights set ${Array.from(
-          lastVersion.columnHeights.values()
-        ).join(', ')} of ${lastVersion.maxHeight}`
-      : `not all column heights set, ${numberOfColumnsWithHeights} / ${numberOfColumns}`
+    numberOfColumns === numberOfColumnsWithSize
+      ? `all column heights set`
+      : `not all column heights set, ${numberOfColumnsWithSize} / ${numberOfColumns}`,
+    Array.from(lastVersion.columnSizes.values()).map(
+      (size) => `${size.width} x ${size.height}`
+    ),
+    `of ${lastVersion.maxHeight}`
   )
 
-  return numberOfColumns === numberOfColumnsWithHeights
+  return numberOfColumns === numberOfColumnsWithSize
 }
 
 function calculateScore(slideId: SlideId) {
-  const numberOfColumns = data[slideId].columnIds.size
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
-  // Calculate average height fill percentage
-  const averageHeightFillPercentage =
-    lastVersion.columnHeights.values().reduce((acc, curr) => acc + curr, 0) /
-    lastVersion.maxHeight /
-    numberOfColumns
+  const totalSize = lastVersion.columnSizes
+    .values()
+    .reduce((acc, curr) => acc + curr.width * curr.height, 0)
 
-  return averageHeightFillPercentage
+  const maxSize = lastVersion.columnSizes
+    .values()
+    .reduce((acc, curr) => acc + curr.width * lastVersion.maxHeight, 0)
+
+  const score = totalSize / maxSize
+
+  console.log('score', slideId, score)
+  return score
 }
 
 function getColumnTypeOfTheTallestColumn(slideId: SlideId) {
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
-  const tallestColumn = Array.from(lastVersion.columnHeights.entries()).reduce(
-    (acc, [columnId, height]) =>
+  const tallestColumn = Array.from(lastVersion.columnSizes.entries()).reduce(
+    (acc, [columnId, { height }]) =>
       height > acc.height ? { columnId, height } : acc,
     { columnId: null as ColumnId | null, height: 0 }
   )
@@ -217,7 +272,7 @@ function addNewVersion(slideId: SlideId) {
 
   data[slideId].versions.push({
     columnStyles: copyColumnStyles(slideId, -1, true),
-    columnHeights: new Map(),
+    columnSizes: new Map(),
     maxHeight: lastVersion.maxHeight,
     score: 0,
   })
@@ -225,7 +280,7 @@ function addNewVersion(slideId: SlideId) {
 
 export function copyColumnStyles(
   slideId: SlideId,
-  versionNr: number,
+  versionNr: number = -1,
   resetFontSize: boolean = false
 ) {
   const version = data[slideId].versions.at(versionNr)
