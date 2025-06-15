@@ -5,7 +5,7 @@ export function SlideContainer({
 }) {
   return (
     <div className="@container aspect-video overflow-y-hidden my-4">
-      <div className="flex items-start p-[2cqw] gap-[2cqw] h-full bg-white rounded-[2cqw]">
+      <div className="flex flex-col p-[4cqw] gap-[3cqw] h-full bg-white rounded-[2cqw] shadow-lg">
         {children}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Slide } from './components/Slide0'
+import { Slide } from './components/Slide'
 import { slides } from './lib/data2'
 
 export default function Home() {
