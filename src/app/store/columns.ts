@@ -8,9 +8,8 @@ import {
   invalidateColumnHeightsForType,
 } from './columnLogic'
 
-// TODO: Use only one CSS variable
-
 interface ColumnState {
+  calculating: boolean
   columnStyles: Record<SlideId, Record<ColumnType, Style>>
 
   updateColumnFontSize: (
@@ -28,6 +27,7 @@ interface ColumnState {
 }
 
 export const useStore = create<ColumnState>()((set) => ({
+  calculating: true,
   columnStyles: slides.reduce((acc, slide) => {
     acc[slide.id] = generateDefaultStyle(slide)
     return acc
@@ -63,21 +63,23 @@ export const useStore = create<ColumnState>()((set) => ({
     maxHeight: number
   ) => {
     console.log('updateColumnHeight', columnId, height)
-    const newColumnStyles = handleHeightChange(
-      slideId,
-      columnId,
-      height,
-      maxHeight
-    )
+    const result = handleHeightChange(slideId, columnId, height, maxHeight)
 
-    if (!newColumnStyles) return
-    console.log('NEW columnStyles', newColumnStyles)
-
-    set((state) => ({
-      columnStyles: {
-        ...state.columnStyles,
-        [slideId]: newColumnStyles,
-      },
-    }))
+    switch (result?.status) {
+      case 'done':
+        set({ calculating: false })
+        return
+      case 'newVersion':
+        console.log('NEW columnStyles', result.columnStyles)
+        set((state) => ({
+          columnStyles: {
+            ...state.columnStyles,
+            [slideId]: result.columnStyles,
+          },
+        }))
+        return
+      default:
+        return
+    }
   },
 }))

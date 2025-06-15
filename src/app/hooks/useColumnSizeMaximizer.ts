@@ -4,6 +4,7 @@ import { useFontSize } from './useFontSize'
 import { useColumnGrow } from './useColumnGrow'
 import { useUpdateColumnFontSize } from './useUpdateColumnFontSizes'
 import { useUpdateColumnHeight } from './useUpdateColumnHeight'
+import { FONT_SIZE_INCREMENT } from '../store/constants'
 
 export function useColumnSizeMaximizer(
   slideId: SlideId,
@@ -26,7 +27,7 @@ export function useColumnSizeMaximizer(
       let height = ref.current.getBoundingClientRect().height
 
       while (height > maxHeight) {
-        updatedFontSize -= 0.05
+        updatedFontSize -= FONT_SIZE_INCREMENT
         ref.current.style.setProperty('--font-size', `${updatedFontSize}cqw`)
 
         height = ref.current.getBoundingClientRect().height
