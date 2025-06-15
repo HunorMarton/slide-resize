@@ -13,7 +13,7 @@ const data: Record<
     columnTypes: Map<ColumnType, ColumnId[]>
     columnIds: Map<ColumnId, ColumnType>
     versions: {
-      columnTypeStyles: Record<ColumnType, Style>
+      columnStyles: Record<ColumnType, Style>
       columnHeights: Map<ColumnId, number>
       maxHeight: number
       score: number
@@ -35,7 +35,7 @@ function initializeData() {
       ),
       versions: [
         {
-          columnTypeStyles: generateDefaultStyle(slide),
+          columnStyles: generateDefaultStyles(slide),
           columnHeights: new Map(),
           maxHeight: Infinity,
           score: 0,
@@ -47,7 +47,7 @@ function initializeData() {
   console.log('initial slides', data)
 }
 
-export function generateDefaultStyle(slide: SlideData) {
+export function generateDefaultStyles(slide: SlideData) {
   return slide.columns.reduce((acc, column) => {
     acc[column.type] = {
       grow: DEFAULT_GROW,
@@ -67,7 +67,7 @@ export function saveFontSize(
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
-  lastVersion.columnTypeStyles[columnType].fontSize = fontSize
+  lastVersion.columnStyles[columnType].fontSize = fontSize
 }
 
 export function invalidateColumnHeightsForType(
@@ -85,8 +85,13 @@ export function handleHeightChange(
   height: number,
   maxHeight: number
 ):
-  | { status: 'done' }
-  | { status: 'newVersion'; columnStyles: Record<ColumnType, Style> }
+  | { status: 'done'; score: number; version: number }
+  | {
+      status: 'newVersion'
+      score: number
+      version: number
+      columnStyles: Record<ColumnType, Style>
+    }
   | undefined {
   // React re-renders the component that initiated the font size change that already has the correct size
   // Ignore this case as it's not a real height change
@@ -108,14 +113,13 @@ export function handleHeightChange(
         'score is lower than previous version, not adding new version'
       )
       // TODO: Revert to previous version
-      // TODO: Return with a 'done' signal, so that the main container can show the final slide
-      return { status: 'done' }
+      return { status: 'done', score, version: data[slideId].versions.length }
     }
 
     if (data[slideId].versions.length > MAX_VERSIONS) {
       // For performance and to avoid potential infinite loops
       console.log('too many versions, not adding new version')
-      return { status: 'done' }
+      return { status: 'done', score, version: data[slideId].versions.length }
     }
 
     const columnType = getColumnTypeOfTheTallestColumn(slideId)
@@ -127,7 +131,9 @@ export function handleHeightChange(
 
     return {
       status: 'newVersion',
-      columnStyles: copyColumnStyles(slideId, true),
+      score,
+      version: data[slideId].versions.length,
+      columnStyles: copyColumnStyles(slideId, -1, true),
     }
   }
 }
@@ -210,19 +216,23 @@ function addNewVersion(slideId: SlideId) {
   if (!lastVersion) throw new Error('No last version')
 
   data[slideId].versions.push({
-    columnTypeStyles: copyColumnStyles(slideId, true),
+    columnStyles: copyColumnStyles(slideId, -1, true),
     columnHeights: new Map(),
     maxHeight: lastVersion.maxHeight,
     score: 0,
   })
 }
 
-function copyColumnStyles(slideId: SlideId, resetFontSize: boolean = false) {
-  const lastVersion = data[slideId].versions.at(-1)
-  if (!lastVersion) throw new Error('No last version')
+export function copyColumnStyles(
+  slideId: SlideId,
+  versionNr: number,
+  resetFontSize: boolean = false
+) {
+  const version = data[slideId].versions.at(versionNr)
+  if (!version) throw new Error('No version')
 
   return Object.fromEntries(
-    Object.entries(lastVersion.columnTypeStyles).map(([columnType, style]) => [
+    Object.entries(version.columnStyles).map(([columnType, style]) => [
       columnType,
       {
         ...style,
@@ -232,11 +242,17 @@ function copyColumnStyles(slideId: SlideId, resetFontSize: boolean = false) {
   )
 }
 
+export function getScore(slideId: SlideId, versionNr: number) {
+  const version = data[slideId].versions.at(versionNr)
+  if (!version) throw new Error('Version not found')
+  return version.score
+}
+
 function increaseColumnWidth(slideId: SlideId, columnType: ColumnType) {
   const lastVersion = data[slideId].versions.at(-1)
   if (!lastVersion) throw new Error('No last version')
 
-  Object.entries(lastVersion.columnTypeStyles).forEach(
+  Object.entries(lastVersion.columnStyles).forEach(
     ([currentColumnType, style]) => {
       if (currentColumnType === columnType) {
         style.grow += GROW_INCREMENT

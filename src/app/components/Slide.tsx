@@ -7,9 +7,10 @@ import { ColumnsContainer } from './ColumnsContainer'
 import { Offscreen } from './Offscreen'
 import { ColumnFitter } from './ColumnFitter'
 import { useStore } from '../store/columns'
+import { Debugger } from './Debugger'
 
 export function Slide({ slide }: { slide: SlideData }) {
-  const calculating = useStore((state) => state.calculating)
+  const calculating = useStore((state) => state.calculating[slide.id])
   const width = 875 // Arbitrary width, everything is relative actually
   const aspectRatio = 16 / 9
 
@@ -17,7 +18,7 @@ export function Slide({ slide }: { slide: SlideData }) {
   const headerHeight = 0.0375 // Hardcoded for now, should be dynamic
   const gap = 0.03 // Horizontal gap between rows
 
-  const blockHeight =
+  const maxHeight =
     width / aspectRatio -
     width * padding * 2 -
     width * headerHeight -
@@ -29,11 +30,7 @@ export function Slide({ slide }: { slide: SlideData }) {
     <>
       <SlideContainer>
         <h1 className="text-[2.5cqw] h-[3.75cqw] font-bold">{slide.title}</h1>
-        <div className="absolute top-[4cqw] right-[4cqw]">
-          <p className="text-[1.5cqw]">
-            {calculating ? 'Calculating...' : 'Done'}
-          </p>
-        </div>
+        <Debugger slideId={slide.id} />
 
         {calculating ? (
           <p className="text-[1.5cqw]">Calculating...</p>
@@ -46,20 +43,22 @@ export function Slide({ slide }: { slide: SlideData }) {
         )}
       </SlideContainer>
 
-      <Offscreen width={width}>
-        <SlideContainer>
-          <ColumnsContainer>
-            {slide.columns.map((column) => (
-              <ColumnFitter
-                key={column.id}
-                slideId={slide.id}
-                column={column}
-                maxHeight={blockHeight}
-              />
-            ))}
-          </ColumnsContainer>
-        </SlideContainer>
-      </Offscreen>
+      {calculating && (
+        <Offscreen width={width}>
+          <SlideContainer>
+            <ColumnsContainer>
+              {slide.columns.map((column) => (
+                <ColumnFitter
+                  key={column.id}
+                  slideId={slide.id}
+                  column={column}
+                  maxHeight={maxHeight}
+                />
+              ))}
+            </ColumnsContainer>
+          </SlideContainer>
+        </Offscreen>
+      )}
     </>
   )
 }
