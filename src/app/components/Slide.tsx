@@ -14,6 +14,8 @@ export function Slide({ slide }: { slide: SlideData }) {
   const width = 875 // Arbitrary width, everything is relative actually
   const aspectRatio = 16 / 9
 
+  // TODO: Use --padding-slide, --h-gap-slide from the root element
+  // E.g.: const padding = window.getComputedStyle(document.documentElement).getPropertyValue('--padding-slide')
   const padding = 0.04 // Multiplied by width to get the padding in pixels
   const headerHeight = 0.0375 // Hardcoded for now, should be dynamic
   const gap = 0.03 // Horizontal gap between rows

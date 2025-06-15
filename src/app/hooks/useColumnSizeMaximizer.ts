@@ -21,8 +21,6 @@ export function useColumnSizeMaximizer(
 
   useEffect(() => {
     if (ref.current) {
-      const t0 = performance.now()
-
       let updatedFontSize = fontSize
       let height = ref.current.getBoundingClientRect().height
 
@@ -32,7 +30,6 @@ export function useColumnSizeMaximizer(
 
         height = ref.current.getBoundingClientRect().height
 
-        /*
         console.log(
           column.id,
           'updated font size',
@@ -40,12 +37,10 @@ export function useColumnSizeMaximizer(
           height,
           maxHeight
         )
-        */
       }
 
       if (updatedFontSize !== fontSize) {
-        const t1 = performance.now()
-        console.log(column.id, 'final font', updatedFontSize, t1 - t0)
+        console.log(column.id, 'final font', updatedFontSize)
 
         // const height = ref.current.getBoundingClientRect().height
         // console.log('final height', height, blockHeight)

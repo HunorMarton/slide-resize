@@ -3,5 +3,5 @@ export function ColumnsContainer({
 }: {
   children: React.ReactNode | React.ReactNode[]
 }) {
-  return <div className="flex items-start gap-[2cqw]">{children}</div>
+  return <div className="flex items-start gap-v-gap-slide">{children}</div>
 }

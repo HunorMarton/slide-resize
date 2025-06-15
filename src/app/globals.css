@@ -3,6 +3,9 @@
 :root {
   --background: #edf1f3;
   --foreground: #171717;
+  --padding-slide: 4;
+  --h-gap-slide: 3;
+  --v-gap-slide: 2;
 }
 
 @theme inline {
@@ -10,6 +13,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --spacing-padding-slide: calc(var(--padding-slide) * 1cqw);
+  --spacing-h-gap-slide: calc(var(--h-gap-slide) * 1cqw);
+  --spacing-v-gap-slide: calc(var(--v-gap-slide) * 1cqw);
 }
 
 @media (prefers-color-scheme: dark) {
