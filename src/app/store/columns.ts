@@ -17,20 +17,10 @@ interface ColumnState {
 
   columnStyles: Record<SlideId, Record<ColumnType, Style>>
 
-  updateColumnFontSize: (
+  updateColumnStyles: (
     slideId: SlideId,
-    version: number,
-    columnType: ColumnType,
-    fontSize: number
-  ) => void
-
-  updateColumnSize: (
-    slideId: SlideId,
-    version: number,
-    columnId: ColumnId,
-    fontSize: number,
-    width: number,
-    height: number,
+    columnStyles: Record<ColumnType, Style>,
+    columnSizes: Map<ColumnId, { width: number; height: number }>,
     maxHeight: number
   ) => void
 
@@ -64,123 +54,48 @@ export const useStore = create<ColumnState>()((set) => ({
     fn: generateDefaultStyles,
   }),
 
-  updateColumnFontSize: (
+  updateColumnFontSizes: (
     slideId: SlideId,
-    version: number,
-    columnType: ColumnType,
-    fontSize: number
+    columnStyles: Record<ColumnType, Style>
   ) => {
-    console.log('updateColumnFontSize', columnType, fontSize)
+    console.log('updateColumnFontSizes', columnStyles)
 
-    set((state) => {
-      if (version !== state.version[slideId]) {
-        console.log('tried to update previous version, ignoring')
-        return {}
-      }
-
-      const result = handleFontSizeChange(slideId, columnType, fontSize)
-      if (result?.status === 'ignoring') {
-        console.log('ignoring font size change')
-        return {}
-      }
-
-      return {
-        columnStyles: {
-          ...state.columnStyles,
-          [slideId]: {
-            ...state.columnStyles[slideId],
-            [columnType]: {
-              ...state.columnStyles[slideId][columnType],
-              fontSize,
-            },
-          },
-        },
-      }
-    })
+    handleFontSizeChange(slideId, columnStyles)
   },
 
-  updateColumnSize: (
+  updateColumnStyles: (
     slideId: SlideId,
-    version: number,
-    columnId: ColumnId,
-    fontSize: number,
-    width: number,
-    height: number,
+    columnStyles: Record<ColumnType, Style>,
+    columnSizes: Map<ColumnId, { width: number; height: number }>,
     maxHeight: number
   ) => {
-    console.log(
-      'updateColumnSize',
-      columnId,
-      fontSize,
-      width,
-      height,
-      maxHeight
-    )
+    console.log('updateColumnStyles', columnSizes, maxHeight)
 
-    set((state) => {
-      if (version !== state.version[slideId]) {
-        console.log('tried to update previous version, ignoring')
-        return {}
-      }
+    handleFontSizeChange(slideId, columnStyles)
+    const result = handleSizeChange(slideId, columnSizes, maxHeight)
 
-      const result = handleSizeChange(
-        slideId,
-        columnId,
-        fontSize,
-        width,
-        height,
-        maxHeight
-      )
-
-      switch (result?.status) {
-        case 'done':
-          console.log('DONE columnStyles', result.columnStyles)
-          return {
-            calculating: {
-              ...state.calculating,
-              [slideId]: false,
-            },
-            score: {
-              ...state.score,
-              [slideId]: result.score,
-            },
-            version: {
-              ...state.version,
-              [slideId]: result.version,
-            },
-            maxVersion: {
-              ...state.maxVersion,
-              [slideId]: result.version,
-            },
-            columnStyles: {
-              ...state.columnStyles,
-              [slideId]: result.columnStyles,
-            },
-          }
-        case 'newVersion':
-          console.log('NEW columnStyles', result.columnStyles)
-          return {
-            score: {
-              ...state.score,
-              [slideId]: result.score,
-            },
-            version: {
-              ...state.version,
-              [slideId]: result.version,
-            },
-            maxVersion: {
-              ...state.maxVersion,
-              [slideId]: result.version,
-            },
-            columnStyles: {
-              ...state.columnStyles,
-              [slideId]: result.columnStyles,
-            },
-          }
-        default:
-          return {}
-      }
-    })
+    set((state) => ({
+      calculating: {
+        ...state.calculating,
+        [slideId]: result.status === 'done' ? false : true,
+      },
+      score: {
+        ...state.score,
+        [slideId]: result.score,
+      },
+      version: {
+        ...state.version,
+        [slideId]: result.version,
+      },
+      maxVersion: {
+        ...state.maxVersion,
+        [slideId]: result.version,
+      },
+      columnStyles: {
+        ...state.columnStyles,
+        [slideId]: copyColumnStyles(slideId),
+      },
+    }))
   },
 
   decreaseVersion: (slideId: SlideId) => {

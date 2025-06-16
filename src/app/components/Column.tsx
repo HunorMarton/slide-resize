@@ -2,16 +2,15 @@ import { ColumnData, SlideId } from '../types'
 import { Block } from './Block'
 import { useFontSize } from '../hooks/useFontSize'
 import { useColumnGrow } from '../hooks/useColumnGrow'
+import { forwardRef } from 'react'
 
-export function Column({
-  slideId,
-  column,
-  ref,
-}: {
-  slideId: SlideId
-  column: ColumnData
-  ref?: React.RefObject<HTMLDivElement | null>
-}) {
+export const Column = forwardRef<
+  HTMLDivElement,
+  {
+    slideId: SlideId
+    column: ColumnData
+  }
+>(({ slideId, column }, ref) => {
   const fontSize = useFontSize(slideId, column.type)
   const grow = useColumnGrow(slideId, column.type)
 
@@ -31,4 +30,6 @@ export function Column({
       ))}
     </div>
   )
-}
+})
+
+Column.displayName = 'Column'

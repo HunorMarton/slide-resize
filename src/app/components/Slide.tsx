@@ -5,9 +5,9 @@ import { Column } from './Column'
 import { SlideContainer } from './SlideContainer'
 import { ColumnsContainer } from './ColumnsContainer'
 import { Offscreen } from './Offscreen'
-import { ColumnFitter } from './ColumnFitter'
 import { useStore } from '../store/columns'
 import { Debugger } from './Debugger'
+import { SlideFitter } from './SlideFitter'
 
 export function Slide({ slide }: { slide: SlideData }) {
   const calculating = useStore((state) => state.calculating[slide.id])
@@ -47,18 +47,7 @@ export function Slide({ slide }: { slide: SlideData }) {
 
       {calculating && (
         <Offscreen width={width}>
-          <SlideContainer>
-            <ColumnsContainer>
-              {slide.columns.map((column) => (
-                <ColumnFitter
-                  key={column.id}
-                  slideId={slide.id}
-                  column={column}
-                  maxHeight={maxHeight}
-                />
-              ))}
-            </ColumnsContainer>
-          </SlideContainer>
+          <SlideFitter slide={slide} maxHeight={maxHeight} />
         </Offscreen>
       )}
     </>
