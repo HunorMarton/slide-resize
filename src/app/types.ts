@@ -1,3 +1,5 @@
+export type ComponentType = 'description' | 'text-block' | 'table'
+
 export type BlockType =
   | 'header'
   | 'text'
@@ -47,16 +49,22 @@ type TableBlockData = {
   }[]
 }
 
-export type ColumnData = {
-  id: ColumnId
-  type: ColumnType
-  blocks: BlockData[]
-}
-
 export type SlideData = {
   id: SlideId
   title: string
   columns: ColumnData[]
+}
+
+export type ColumnData = {
+  id: ColumnId
+  type: ColumnType
+  components: ComponentData[]
+}
+
+export type ComponentData = {
+  id: string
+  type: ComponentType
+  blocks: BlockData[]
 }
 
 export type Style = {

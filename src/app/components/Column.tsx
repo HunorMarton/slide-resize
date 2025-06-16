@@ -1,5 +1,5 @@
 import { ColumnData, SlideId } from '../types'
-import { Block } from './Block'
+import { Component } from './Component'
 import { useFontSize } from '../hooks/useFontSize'
 import { useColumnGrow } from '../hooks/useColumnGrow'
 import { forwardRef } from 'react'
@@ -25,8 +25,8 @@ export const Column = forwardRef<
         } as React.CSSProperties
       }
     >
-      {column.blocks.map((block) => (
-        <Block key={block.id} block={block} />
+      {column.components.map((component) => (
+        <Component key={component.id} component={component} />
       ))}
     </div>
   )
