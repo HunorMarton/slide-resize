@@ -22,8 +22,69 @@ export const slides: SlideData[] = [
                 id: '00-1-1-2',
                 type: 'text',
                 paragraphs: [
-                  'This text is not getting bigger, because it uses the maximum font size.',
+                  `Yes, I know it wasn't a coding challenge, but the good news is that this demo doesn't actually solve the problem`,
                 ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '00-1',
+    title: 'because',
+    columns: [
+      {
+        id: '00-1-1',
+        type: 'A',
+        components: [
+          {
+            id: '00-1-1-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '00-1-1-1-1',
+                type: 'text',
+                paragraphs: [
+                  'the original challenge required component level consistency across columns',
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '00-1-2',
+        type: 'A',
+        components: [
+          {
+            id: '00-1-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '00-1-2-1-1',
+                type: 'text',
+                paragraphs: [
+                  'and what this demo is capable of doing is column type consistency',
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '00-1-3',
+        type: 'B',
+        components: [
+          {
+            id: '00-1-3-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '00-1-3-1-1',
+                type: 'header',
+                content: `here we go`,
               },
             ],
           },
@@ -141,7 +202,7 @@ export const slides: SlideData[] = [
                 items: [
                   'What is the minimum set of components and what variables they have that we can adjust to solve the problem?',
                   'What are the performance expectations?',
-                  'How do people expect it to behave?',
+                  `How do people expect it to behave?`,
                 ],
               },
               {
@@ -197,43 +258,412 @@ export const slides: SlideData[] = [
     ],
   },
   {
-    id: '02---',
-    title: 'Slide deck implementation approaches',
+    id: '02-1',
+    title: 'Space optimization algorithms',
     columns: [
       {
-        id: '02-0',
+        id: '02-1-1',
         type: 'A',
         components: [
           {
-            id: '02-0-1',
-            type: 'table',
+            id: '02-1-1-1',
+            type: 'text-block',
             blocks: [
               {
-                id: '02-0-1-1',
-                type: 'table',
-                headers: ['', 'HTML', 'SVG', 'Canvas'],
-                rows: [
-                  {
-                    id: '02-0-1-1-1',
-                    cells: ['Plays well with React', 'Yes', 'Yes', 'No'],
-                  },
-                  {
-                    id: '02-0-1-1-2',
-                    cells: ['Wraps text', 'Yes', 'No', 'No'],
-                  },
-                  {
-                    id: '02-0-1-1-3',
-                    cells: ['Performance', 'Fast', 'Fast', 'Very fast'],
-                  },
-                  {
-                    id: '02-0-1-1-4',
-                    cells: [
-                      'Other',
-                      'Contenteditable only works with HTML elements',
-                      'Uses absolute positioning and relative sizing out of the box.',
-                      'Hard to implement',
-                    ],
-                  },
+                id: '02-1-1-1-1',
+                type: 'header',
+                content: 'Heuristics-based approaches',
+              },
+              {
+                id: '02-1-1-1-2',
+                type: 'list',
+                items: [
+                  `Iterative processes that follow certain patterns that might not result in the optimal solution.`,
+                  `Fast, easy to implement, and can be used to get a good enough solution.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-1-2',
+        type: 'A',
+        components: [
+          {
+            id: '02-1-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-1-2-1-1',
+                type: 'header',
+                content: 'Constraint satisfaction problem',
+              },
+              {
+                id: '02-1-2-1-2',
+                type: 'list',
+                items: [
+                  `Frames the problem in a more mathematical way. Can deal with large amount of constraints.`,
+                  `cassowary.js is a library that could be used to solve the problem.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-1-3',
+        type: 'A',
+        components: [
+          {
+            id: '02-1-3-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-1-3-1-1',
+                type: 'header',
+                content: 'Linear Programming',
+              },
+              {
+                id: '02-1-3-1-2',
+                type: 'list',
+                items: [
+                  `If the constraints could be expressed as a linear equation, it could be solved with linear programming.`,
+                  `Font size changes can't be described as a linear equation, therefore it could only used for approximations.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-1-4',
+        type: 'A',
+        components: [
+          {
+            id: '02-1-4-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-1-4-1-1',
+                type: 'header',
+                content: 'Evolutionary Algorithms',
+              },
+              {
+                id: '02-1-4-1-2',
+                type: 'list',
+                items: [
+                  `Evolutionary algorithms are a type of optimization algorithm that is inspired by the process of natural selection.`,
+                  `Can handle complex, non-linear constraints and explore a vast solution space.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '02-2',
+    title: 'Heuristics-based approaches',
+    columns: [
+      {
+        id: '02-2-0',
+        type: 'A',
+        components: [
+          {
+            id: '02-2-0-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-2-0-1-1',
+                type: 'text',
+                paragraphs: [
+                  `An iterative process that has the following steps.`,
+                  `First, we change one or more variables.`,
+                  `We check if the constraints are satisfied.`,
+                  `If they are, we measure how good the solution is with some score function.`,
+                  `We keep on iterating until we reach a score that is good enough.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-2-1',
+        type: 'B',
+        components: [
+          {
+            id: '02-2-1-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-2-1-1-1',
+                type: 'header',
+                content: 'The variables and constraints',
+              },
+              {
+                id: '02-2-1-1-2',
+                type: 'list',
+                label: 'Variables',
+                items: [
+                  `Each component has a base font size (other sizing parameters are derived from it).`,
+                  `Each column has a width, however they might be tightly coupled to other columns.`,
+                ],
+              },
+              {
+                id: '02-2-1-1-3',
+                type: 'list',
+                label: 'Constraints',
+                items: [
+                  `Components in different columns make the columns having the same width.`,
+                  `Content should not overflow the columns.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-2-2',
+        type: 'B',
+        components: [
+          {
+            id: '02-2-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-2-2-1-1',
+                type: 'header',
+                content: 'The problem',
+              },
+              {
+                id: '02-2-2-1-2',
+                type: 'list',
+                items: [
+                  `If the solution space is large with multiple dimensions it's not obvious how to navigate it.`,
+                  `Should we change the font size of a component or the width of a column? Which component or column should we change?`,
+                  `Do constraints have weights or different priorities?`,
+                  `Reducing the solution space by simplifying the options or the granularity of the options is a good way to make the problem easier to solve.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '02-3',
+    title: 'Solution to a simplified problem',
+    columns: [
+      {
+        id: '02-3-1',
+        type: 'A',
+        components: [
+          {
+            id: '02-3-1-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-3-1-1-1',
+                type: 'text',
+                paragraphs: [
+                  `This demo simplifies the problem by simplifying the solution space.`,
+                  `In this demo consistency is only required between columns of the same type.`,
+                  `If we only use one component in each column, then both approaches should reach the same result.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '02-3-2',
+        type: 'B',
+        components: [
+          {
+            id: '02-3-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '02-3-2-1-1',
+                type: 'list',
+                label: 'Steps this algorithm follows:',
+                items: [
+                  `Start with maximum font size in each column and equal column widths.`,
+                  `Decrease font size in each column until the content fits into the column.`,
+                  `If multiple columns use the same column type then use the smallest font size.`,
+                  `Calculate a score based on the fill percentage of the columns.`,
+                  `Pick the tallest column and increase its width.`,
+                  `Repeat until the score is not any better than the previous one or the maximum number of iterations is reached.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '06',
+    title: 'React implementation',
+    columns: [
+      {
+        id: '06-1',
+        type: 'A',
+        components: [
+          {
+            id: '06-1-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '06-1-1-1',
+                type: 'header',
+                content: 'Store',
+              },
+              {
+                id: '06-1-1-2',
+                type: 'text',
+                paragraphs: [
+                  `The store keeps track of the exact sizes, grow factor and font size of each column. For consistency it keeps track of font sizes and the grow factor per column type and the exact sizes per individual column.`,
+                  `Once it gathered every measurement it calculates a score value based on the fill percentage of the columns. Then it generates a new version, picks the tallest column and increases the width of the column type. This will trigger the columns to re-calculate themselves.`,
+                  `This process is repeated until the new score is not any better than the previous one or the maximum number of iterations is reached.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '06-2',
+        type: 'A',
+        components: [
+          {
+            id: '06-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '06-2-1-0',
+                type: 'header',
+                content: 'Slide component',
+              },
+              {
+                id: '06-2-1-0-1',
+                type: 'text',
+                paragraphs: [
+                  `If the arrangement is not yet final, it renders the intermediate columns off screen for measurements with the SlideFitter component.`,
+                  `Renders the final columns once the measurements are done.`,
+                ],
+              },
+              {
+                id: '06-2-1-1',
+                type: 'header',
+                content: 'SlideFitter Component',
+              },
+              {
+                id: '06-2-1-2',
+                type: 'text',
+                paragraphs: [
+                  `Uses forwardRefs to gather the refs of each column and uses them to manipulate the CSS variables on them and calculate the size of each column.`,
+                  `Iteratively calculates the maximum font size for each column, while satisfying the constraints.`,
+                  `Once the measurements are done, updates the store with the new values.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '06-3',
+        type: 'A',
+        components: [
+          {
+            id: '06-3-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '06-3-1-1',
+                type: 'header',
+                content: 'Column component',
+              },
+              {
+                id: '06-3-1-2',
+                type: 'text',
+                paragraphs: [
+                  `The column component sets the initial value of the --font-size CSS variable for its children and uses the flex grow property to size the components.`,
+                  `It passes it's ref to the SlideFitter component so that it can manipulate the CSS variable.`,
+                ],
+              },
+              {
+                id: '06-3-1-3',
+                type: 'header',
+                content: 'Other display components',
+              },
+              {
+                id: '06-3-1-4',
+                type: 'text',
+                paragraphs: [
+                  `Components fill the available space vertically and size themselves based on the CSS variables provided by their column.`,
+                  `Using CSS variables is a powerful way to avoid re-rendering the components.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '05',
+    title: 'Avoid re-rendering React components',
+    columns: [
+      {
+        id: '05-1',
+        type: 'A',
+        components: [
+          {
+            id: '05-1-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '05-1-1-1',
+                type: 'header',
+                content: 'Use refs and manipulate the DOM directly',
+              },
+              {
+                id: '05-1-1-2',
+                type: 'text',
+                paragraphs: [
+                  `We can use refs and manipulate the DOM directly to avoid re-rendering the components.`,
+                  `This is a significant performance boost, and enables us to use imperative code.`,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '05-2',
+        type: 'A',
+        components: [
+          {
+            id: '05-2-1',
+            type: 'text-block',
+            blocks: [
+              {
+                id: '05-2-1-1',
+                type: 'header',
+                content: 'Leverage CSS capabilities to change the components',
+              },
+              {
+                id: '05-2-1-2',
+                type: 'text',
+                paragraphs: [
+                  `Instead of passing on size and font variables as props (or in context) to the components, we can drive the style of the components with CSS.`,
+                  `This way it's enough to change the CSS variables on the slide or column level and the style of the components will be updated automatically.`,
+                  `While it's not related to re-rendering, but using flex grow to change the size of the components also simplifies the logic.`,
                 ],
               },
             ],
@@ -389,7 +819,8 @@ export const slides: SlideData[] = [
                 type: 'text',
                 paragraphs: [
                   `This is the solution we are currently using.`,
-                  `It's the most complex solution, but it is performant enough, and using the same code to render and for measurements makes it easier to maintain.`,
+                  `Gather refs to each column and manipulate them in a useEffect hook in an imperative way.`,
+                  `Using the same code to render and for measurements makes it easier to maintain.`,
                 ],
               },
             ],
@@ -399,54 +830,43 @@ export const slides: SlideData[] = [
     ],
   },
   {
-    id: '05',
-    title: 'Avoid re-rendering React components',
+    id: '02---',
+    title: 'Slide deck implementation approaches',
     columns: [
       {
-        id: '05-1',
+        id: '02-0',
         type: 'A',
         components: [
           {
-            id: '05-1-1',
-            type: 'text-block',
+            id: '02-0-1',
+            type: 'table',
             blocks: [
               {
-                id: '05-1-1-1',
-                type: 'header',
-                content: 'Use refs and manipulate the DOM directly',
-              },
-              {
-                id: '05-1-1-2',
-                type: 'text',
-                paragraphs: [
-                  `We can use refs and manipulate the DOM directly to avoid re-rendering the components.`,
-                  `Separate store logic into reactive and non-reactive parts for clarity.`,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: '05-2',
-        type: 'A',
-        components: [
-          {
-            id: '05-2-1',
-            type: 'text-block',
-            blocks: [
-              {
-                id: '05-2-1-1',
-                type: 'header',
-                content: 'Leverage CSS capabilities to change the components',
-              },
-              {
-                id: '05-2-1-2',
-                type: 'text',
-                paragraphs: [
-                  `Instead of passing on size and font variables as props (or in context) to the components, we can drive the style of the components with CSS.`,
-                  `This way it's enough to change the CSS variables on the column level and the style of the components will be updated automatically.`,
-                  `While it's not related to re-rendering, but using flex grow to change the size of the components also simplifies the logic.`,
+                id: '02-0-1-1',
+                type: 'table',
+                headers: ['', 'HTML', 'SVG', 'Canvas'],
+                rows: [
+                  {
+                    id: '02-0-1-1-1',
+                    cells: ['Plays well with React', 'Yes', 'Yes', 'No'],
+                  },
+                  {
+                    id: '02-0-1-1-2',
+                    cells: ['Wraps text', 'Yes', 'No', 'No'],
+                  },
+                  {
+                    id: '02-0-1-1-3',
+                    cells: ['Performance', 'Fast', 'Fast', 'Very fast'],
+                  },
+                  {
+                    id: '02-0-1-1-4',
+                    cells: [
+                      'Other',
+                      'Contenteditable only works with HTML elements',
+                      'Uses absolute positioning and relative sizing out of the box.',
+                      'Hard to implement',
+                    ],
+                  },
                 ],
               },
             ],
@@ -456,78 +876,25 @@ export const slides: SlideData[] = [
     ],
   },
   {
-    id: '06',
-    title: 'Behavior of the components',
+    id: '15',
+    title: 'Optimization possibilities',
     columns: [
       {
-        id: '06-1',
+        id: '15-1',
         type: 'A',
         components: [
           {
-            id: '06-1-1',
+            id: '15-1-1',
             type: 'text-block',
             blocks: [
               {
-                id: '06-1-1-1',
-                type: 'header',
-                content: 'Store',
-              },
-              {
-                id: '06-1-1-2',
-                type: 'text',
-                paragraphs: [
-                  `The store keeps track of the exact sizes, grow factor and font size of each column. For consistency it keeps track of font sizes and the grow factor per column type and the exact sizes per individual column.`,
-                  `Once it gathered every measurement it calculates a score value based on the fill percentage of the columns. Then it generates a new version, picks the tallest column and increases the width of the column type. This will trigger the columns to re-calculate themselves.`,
-                  `This process is repeated until the new score is not any better than the previous one or the maximum number of iterations is reached.`,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: '06-2',
-        type: 'A',
-        components: [
-          {
-            id: '06-2-1',
-            type: 'text-block',
-            blocks: [
-              {
-                id: '06-2-1-1',
-                type: 'header',
-                content: 'Slide component',
-              },
-              {
-                id: '06-2-1-2',
-                type: 'text',
-                paragraphs: [
-                  `The slide component is relatively simple. It renders the final columns once the measurements are done or a loading screen.`,
-                  `In case the measurements are not done yet, it uses the column fitter components to do the calculations offscreen.`,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: '06-3',
-        type: 'A',
-        components: [
-          {
-            id: '06-3-1',
-            type: 'text-block',
-            blocks: [
-              {
-                id: '06-3-1-1',
-                type: 'header',
-                content: 'Column fitter component',
-              },
-              {
-                id: '06-3-1-2',
-                type: 'text',
-                paragraphs: [
-                  `The column fitter component is responsible for the measurements of the columns. It get's the reference of the underlying DOM element and iteratively decreases the font size until the content fits in the available space.`,
+                id: '15-1-1-1',
+                type: 'list',
+                items: [
+                  `Using binary search for scaling instead of gradual scaling.`,
+                  `Using predefined variants to reduce the problem space.`,
+                  `Prioritize calculations on visible content only, in case the content is streaming do it as early as possible.`,
+                  `Use approximation as a starting point for the algorithm.`,
                 ],
               },
             ],
